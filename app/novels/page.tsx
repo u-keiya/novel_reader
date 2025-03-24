@@ -59,7 +59,7 @@ export default function NovelsPage() {
       // Collect unique tags
       const uniqueTags = new Set<string>();
       data.forEach(novel => {
-        novel.tags.forEach(tag => uniqueTags.add(tag));
+        novel.tags.forEach((tag: string) => uniqueTags.add(tag));
       });
       setAllTags(Array.from(uniqueTags));
     }
@@ -82,15 +82,15 @@ export default function NovelsPage() {
         </div>
         {allTags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
-            {allTags.map((tag) => (
+            {allTags.map((tag: string) => (
               <Badge
                 key={tag}
                 variant="secondary"
                 className="cursor-pointer"
                 onClick={() => {
-                  const currentTags = searchTags.split(",").map(t => t.trim()).filter(Boolean);
+                  const currentTags = searchTags.split(",").map((t: string) => t.trim()).filter(Boolean);
                   if (currentTags.includes(tag)) {
-                    setSearchTags(currentTags.filter(t => t !== tag).join(", "));
+                    setSearchTags(currentTags.filter((t: string) => t !== tag).join(", "));
                   } else {
                     setSearchTags([...currentTags, tag].join(", "));
                   }
@@ -142,7 +142,7 @@ export default function NovelsPage() {
                     {novel.description}
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {novel.tags.map((tag) => (
+                    {novel.tags.map((tag: string) => (
                       <Badge
                         key={tag}
                         variant="secondary"
