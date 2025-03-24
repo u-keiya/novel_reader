@@ -52,7 +52,7 @@ export default function MyPage() {
       const { data, error } = await supabase
         .from("novels")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("user_id", user?.id)
         .order("created_at", { ascending: false });
 
       if (error) {
@@ -68,6 +68,8 @@ export default function MyPage() {
   }, [user, router]);
 
   const handleDelete = async (novel: Novel) => {
+    if (!user) return;
+    
     try {
       // First, delete the file from storage
       const { error: storageError } = await supabase.storage
@@ -116,7 +118,7 @@ export default function MyPage() {
           <Card>
             <CardContent className="pt-6">
               <p className="text-muted-foreground">
-                メールアドレス: {user.email}
+                メールアドレス: {user?.email}
               </p>
             </CardContent>
           </Card>
