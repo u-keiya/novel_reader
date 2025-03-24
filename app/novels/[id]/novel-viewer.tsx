@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { LikeButton } from "@/components/like-button";
 
 interface Novel {
   id: string;
@@ -11,6 +12,7 @@ interface Novel {
   tags: string[];
   file_path: string;
   user_id: string;
+  likes_count: number;
 }
 
 export function NovelViewer({ id }: { id: string }) {
@@ -21,12 +23,22 @@ export function NovelViewer({ id }: { id: string }) {
     async function fetchNovel() {
       const { data, error } = await supabase
         .from("novels")
-        .select()
+        .select(`
+          *,
+          likes (count)
+        `)
         .eq("id", id)
         .single();
 
       if (error) throw error;
-      setNovel(data);
+      
+      // Transform the data to include likes_count
+      const transformedData = {
+        ...data,
+        likes_count: data.likes?.length || 0
+      };
+      
+      setNovel(transformedData);
 
       const { data: fileData, error: fileError } = await supabase.storage
         .from("novels")
@@ -55,7 +67,10 @@ export function NovelViewer({ id }: { id: string }) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold mb-4">{novel.title}</h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">{novel.title}</h1>
+          <LikeButton novelId={novel.id} initialLikesCount={novel.likes_count} />
+        </div>
         <p className="text-muted-foreground mb-4">{novel.description}</p>
         <div className="flex gap-2 mb-6">
           {novel.tags.map((tag) => (

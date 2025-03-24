@@ -35,10 +35,15 @@ export function Header() {
                     <span>アップロード</span>
                   </Link>
                 </Button>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/mypage" className="flex items-center space-x-1">
+                    <UserIcon className="h-4 w-4" />
+                    <span>マイページ</span>
+                  </Link>
+                </Button>
                 <Button variant="ghost" size="sm" onClick={() => signOut()}>
                   ログアウト
                 </Button>
-                <UserIcon className="h-6 w-6" />
               </>
             ) : (
               <Button variant="ghost" size="sm" asChild>
