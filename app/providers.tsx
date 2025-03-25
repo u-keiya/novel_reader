@@ -5,9 +5,14 @@ import { supabase } from "@/lib/supabase/client";
 import { useAuthStore } from "@/store/auth-store";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const setUser = useAuthStore((state) => state.setUser);
+  const { setUser, setInitialized } = useAuthStore();
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setInitialized(true);
+    });
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_, session) => {
@@ -17,7 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [setUser]);
+  }, [setUser, setInitialized]);
 
   return children;
 }
