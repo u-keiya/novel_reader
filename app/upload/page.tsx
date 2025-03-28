@@ -86,7 +86,19 @@ export default function UploadPage() {
         description: "小説が正常にアップロードされました",
       });
 
-      router.push("/");
+      // Revalidate the paths
+      await fetch("/api/revalidate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: process.env.NEXT_PUBLIC_REVALIDATE_TOKEN,
+          path: "/novels",
+        }),
+      });
+
+      router.push("/novels");
     } catch (error) {
       toast({
         variant: "destructive",
